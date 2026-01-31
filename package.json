@@ -17,5 +17,13 @@
   "bugs": {
     "url": "https://github.com/REDRAGO14/Mele-ekt-CMS/issues"
   },
-  "homepage": "https://github.com/REDRAGO14/Mele-ekt-CMS#readme"
+  "homepage": "https://github.com/REDRAGO14/Mele-ekt-CMS#readme",
+  "dependencies": {
+    "cors": "^2.8.6",
+    "cros": "^1.1.0",
+    "dotenv": "^17.2.3",
+    "express": "^5.2.1",
+    "mangodb": "^1.0.0",
+    "mongoose": "^9.1.5"
+  }
 }
