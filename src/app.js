@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 const app = express();
 require("dotenv").config({ path: "../.env" });
 const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken");
+const jwt = require('jsonwebtoken')
 
 app.use(express.json());
 
@@ -29,23 +29,42 @@ app.get("/", (req, res) => {
 });
 
 app.post("/api/sign_up", async (req, res) => {
-  try {
-    const hashedPassword = await bcrypt.hash(req.body.password, 10);
-
-    const user = new User({
-      user_id: req.body._id,
-      email: req.body.email,
-      password: hashedPassword,
-      trusted_ips: req.ip,
-    });
-    const savedUser = await user.save();
-    res.status(201).send(savedUser);
-  } catch (err) {
-    res.status(500).send(err);
+  try{
+  const hashedPassword = await bcrypt.hash(req.body.password, 10);
+  
+  const user = new User({
+    user_id: req.body._id,
+    email: req.body.email,
+    password: hashedPassword,
+    trusted_ips: req.ip,
+  });
+  const savedUser = await user.save();
+    res.status(201).send(savedUser)
+}catch(err){
+    res.status(500).send(err)
   }
 });
 
-
+app.post('/api/login', async (req,res) => {
+  try{
+    const user = await User.findOne({
+      email: req.body.email 
+    })
+    if(!user){
+      res.status(401).json({
+        message: "Invalid email or password"
+      })
+    }
+    const validPassword = bcrypt.compare(req.body.password, user.password)
+    if(!validPassword){
+      res.status(401).json({
+        message: "Invalid email or password"
+      })
+    }
+    res.send("success")
+  }catch{
+      }
+})
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
