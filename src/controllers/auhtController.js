@@ -17,6 +17,7 @@ exports.signUp = async (req, res) => {
       password: hashedPassword,
       trusted_ips: req.ip,
     });
+    
     await user.save();
     res.status(201).send("regestration successfull");
   } catch (err) {
