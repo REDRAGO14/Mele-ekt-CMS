@@ -4,7 +4,7 @@ const BlogSchema = Schema({
   title: { type: String, required: true },
   content: { type: String, required: true },
   author: {
-    type: Schema.Types.ObjectId,
+    type: Schema.Types.String,
     required: true
   },
   isFlagged: { type: String, required: true, default: false },

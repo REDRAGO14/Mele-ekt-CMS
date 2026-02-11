@@ -54,7 +54,7 @@ exports.login = async (req, res) => {
         await user.trusted_ips.push(userIP);
         await user.save();
       }
-      const token =  jwt.sign({id: user._id, role: user.role}, Jwt_Sectet ,{ expiresIn: '1hr' })
+      const token =  jwt.sign({email: user.email, role: user.role}, Jwt_Sectet ,{ expiresIn: '1hr' })
       
       res.header("Authorization", token).json({
         token,

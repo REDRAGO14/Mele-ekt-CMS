@@ -13,7 +13,7 @@ app.use(express.json());
 
 dbConnection();
 
-app.get("/", verifyToken, (req, res) => {
+app.get("/"| "/home", blogController.All_Blogs , (req, res) => {
   res.send("Server is running");
 });
 

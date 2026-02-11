@@ -26,7 +26,6 @@ const contentGuard = (req, res, next) => {
   const { title, content } = req.body;
   const combindContent = `${title} ${content}`;
   const pattern = new RegExp(`\\b(${extremeContent.join("|")})\\b`, "i");
-  console.log(pattern)
   if (pattern.test(combindContent)) {
     req.isFlagged = true;
     console.log("⚠️ Extreme content detected!");
