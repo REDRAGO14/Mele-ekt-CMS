@@ -13,7 +13,7 @@ app.use(express.json());
 
 dbConnection();
 
-app.get("/"| "/home", blogController.All_Blogs , (req, res) => {
+app.get("/" || "/home", blogController.All_Blogs , (req, res) => {
   res.send("Server is running");
 });
 
@@ -21,6 +21,8 @@ app.post("/api/sign_up", auhtController.signUp);
 
 app.post("/api/login", auhtController.login);
 app.post("/api/create_blog",verifyToken, contentGuard, blogController.Create_Blog);
+
+app.delete("/api/delete_blog",verifyToken, blogController.Delete_Blog)
 
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
