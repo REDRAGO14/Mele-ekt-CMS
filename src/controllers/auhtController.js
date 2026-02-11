@@ -2,7 +2,12 @@ const express = require("express");
 const mongoose = require("mongoose");
 const userSchema = require("../Schema/UserSchema");
 const bcrypt = require("bcrypt");
+const jwt = require('jsonwebtoken')
 const app = express();
+require('dotenv').config({path: '../../.env'})
+
+const Jwt_Sectet = process.env.Jwt_Sectet
+
 app.use(express.json());
 
 const User = mongoose.model("user", userSchema);
@@ -17,6 +22,7 @@ exports.signUp = async (req, res) => {
       password: hashedPassword,
       trusted_ips: req.ip,
     });
+    
     await user.save();
     res.status(201).send("regestration successfull");
   } catch (err) {
@@ -27,6 +33,7 @@ exports.signUp = async (req, res) => {
 
 exports.login = async (req, res) => {
   try {
+    
     const user = await User.findOne({
       email: req.body.email,
     });
@@ -47,7 +54,10 @@ exports.login = async (req, res) => {
         await user.trusted_ips.push(userIP);
         await user.save();
       }
-      res.status(201).json({
+      const token =  jwt.sign({id: user._id, role: user.role}, Jwt_Sectet ,{ expiresIn: '1hr' })
+      
+      res.header("Authorization", token).json({
+        token,
         message: "logged in successfully",
       });
     }

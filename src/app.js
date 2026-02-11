@@ -2,6 +2,7 @@ const express = require("express");
 require("dotenv").config({ path: "../.env" });
 const auhtController = require("./controllers/auhtController");
 const dbConnection = require("./config/db");
+const verifyToken = require('./middleware/bouncer')
 const PORT = process.env.PORT || 3000;
 
 const app = express();
@@ -10,7 +11,7 @@ app.use(express.json());
 
 dbConnection();
 
-app.get("/", (req, res) => {
+app.get("/", verifyToken, (req, res) => {
   res.send("Server is running");
 });
 
