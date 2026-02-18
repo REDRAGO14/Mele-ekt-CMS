@@ -13,7 +13,7 @@ app.use(express.json());
 
 dbConnection();
 
-app.get("/" || "/home", blogController.All_Blogs);
+app.get("/api/blogs/public", blogController.All_Blogs);
 
 app.post("/api/sign_up", auhtController.signUp);
 
