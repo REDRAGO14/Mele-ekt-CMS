@@ -1,6 +1,6 @@
 const express = require("express");
 const mongoose = require("mongoose");
-const userSchema = require("../Schema/UserSchema");
+const User = require("../Schema/UserSchema");
 const bcrypt = require("bcrypt");
 const jwt = require('jsonwebtoken')
 const app = express();
@@ -10,7 +10,7 @@ const Jwt_Sectet = process.env.Jwt_Sectet
 
 app.use(express.json());
 
-const User = mongoose.model("user", userSchema);
+
 
 exports.signUp = async (req, res) => {
   try {
@@ -21,10 +21,10 @@ exports.signUp = async (req, res) => {
       email: req.body.email,
       password: hashedPassword,
       trusted_ips: req.ip,
-    });
+    });   
     
     await user.save();
-    res.status(201).send("regestration successfull");
+    res.status(201).json({message: "User regestered successfull✅"});
   } catch (err) {
     console.log(err)
     res.status(500).send("internal server error");
@@ -38,12 +38,12 @@ exports.login = async (req, res) => {
       email: req.body.email,
     });
     if (!user) {
-      res.status(401).send("INVALID Email");
+      return res.status(401).send("INVALID Email");
     }
     const isPassword = await bcrypt.compare(req.body.password, user.password);
     if (user) {
       if (!isPassword) {
-        res.status(401).send("INVALID PASSWORD");
+        return res.status(401).send("INVALID PASSWORD");
       }
     }
 
@@ -54,9 +54,9 @@ exports.login = async (req, res) => {
         await user.trusted_ips.push(userIP);
         await user.save();
       }
-      const token =  jwt.sign({email: user.email, role: user.role}, Jwt_Sectet ,{ expiresIn: '1hr' })
+      const token =  jwt.sign({email: user.email, role: user.role, id: user._id}, Jwt_Sectet ,{ expiresIn: '1hr' })
       
-      res.header("Authorization", token).json({
+      return res.header("Authorization", token).json({
         token,
         message: "logged in successfully",
       });

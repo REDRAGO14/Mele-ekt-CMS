@@ -1,63 +1,100 @@
 const express = require("express");
-const { model } = require("mongoose");
-const BlogSchema = require("../Schema/BlogSchema");
+const Blog = require("../Schema/BlogSchema");
+const comment = require("../Schema/CommentSchema");
+const Comment = require("../Schema/CommentSchema");
 
 const app = express();
 app.use(express.json());
 
-const Blog = model("blog", BlogSchema);
+
+exports.All_Blogs = async (req, res) => {
+  try {
+    const blogs = await Blog.find().populate("author", "email -_id").populate("blogComments", "comment -_id -blog").sort({Engagement: -1}).lean();
+    //here i use ai to get only the author email string not the email object
+    const flattenedBlogs = blogs.map(blog => ({
+      ...blog,
+      author: blog.author ? blog.author.email : "Unknown" 
+    }));
+
+    res.json(flattenedBlogs);
+  } catch (err) {
+    console.log(err);
+  }
+};
 
 exports.Create_Blog = async (req, res) => {
   try {
-    const authorEmail = req.user.email;
+    const authorId = req.user.id;
     const blog = new Blog({
       title: req.body.title,
       content: req.body.content,
       isFlagged: req.isFlagged,
-      author: authorEmail,
+      author: authorId,
     });
     await blog.save();
-    res.status(201).send("blog Created Successfully✅");
+    return res.status(201).json({message: "blog Created Successfully✅"});
   } catch (err) {
     console.log(err);
     res.status(500).json({ error: "internal server error" });
   }
 };
 
-exports.All_Blogs = async (req, res) => {
-  try {
-    const blogs = await Blog.find().populate("author");
-    res.json(blogs);
-  } catch (err) {
-    console.log(err);
-  }
-};
 
 exports.Delete_Blog = async (req, res) => {
   try {
-    const blogId = req.body.blogId;
+    const blogId = req.params.id;
     const email = req.user.email;
     const role = req.user.role;
     const blog = await Blog.findOne({ _id: blogId });
     if (!blog) {
-     return res.status(401).json({
+      return res.status(404).json({
         message: "blog not found.",
       });
     }
     const isAuthorized = email === blog.author || role === "admin";
     if (isAuthorized) {
-      await Blog.findByIdAndDelete(blogId);
-      console.log(blog);
+      await Blog.findByIdAndDelete(blogId); 
+      await Comment.deleteMany({blog: blogId})
 
-      return res.json("blog deleted");
+      return res.status(201).json({message: "Blog Deleted Successfully✅"});
     } else {
       res.status(403).json({
-        message: "you are not authorized",
+        message: "🚫you are not authorized",
       });
     }
   } catch (err) {
     return res.status(500).json({
-        error: err.message
+      error: err.message,
     });
+  }
+};
+
+exports.Update_Blog = async (req, res) => {
+  try {
+    const blogId = req.params.id;
+    const isflagged = req.isFlagged;
+    const updated_blog = req.body;
+    console.log(updated_blog)
+    const email = req.user.email;
+    const blog = await Blog.findOne({ _id: blogId });
+    if (!blog) {
+      return res.status(404).json({
+        message: "blog not found.",
+      });
+    }
+    const isAuthorized = email === blog.author;
+    if (isAuthorized) {
+      await Blog.findByIdAndUpdate(
+        { _id: blogId },
+        { $set: updated_blog, isFlagged: isflagged },
+      );
+      return res.status(201).json({ message: "blog Updated Successfully✅" });
+    } else {
+      res.status(403).json({
+        message: "🚫you are not authorized",
+      });
+    }
+  } catch (error) {
+    console.log(error);
   }
 };
