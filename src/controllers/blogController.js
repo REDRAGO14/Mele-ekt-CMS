@@ -1,5 +1,7 @@
 const express = require("express");
 const Blog = require("../Schema/BlogSchema");
+const comment = require("../Schema/CommentSchema");
+const Comment = require("../Schema/CommentSchema");
 
 const app = express();
 app.use(express.json());
@@ -7,8 +9,14 @@ app.use(express.json());
 
 exports.All_Blogs = async (req, res) => {
   try {
-    const blogs = await Blog.find().populate("author", "email -_id");
-    res.json(blogs);
+    const blogs = await Blog.find().populate("author", "email -_id").populate("blogComments", "comment -_id -blog").sort({Engagement: -1}).lean();
+    //here i use ai to get only the author email string not the email object
+    const flattenedBlogs = blogs.map(blog => ({
+      ...blog,
+      author: blog.author ? blog.author.email : "Unknown" 
+    }));
+
+    res.json(flattenedBlogs);
   } catch (err) {
     console.log(err);
   }
@@ -46,6 +54,7 @@ exports.Delete_Blog = async (req, res) => {
     const isAuthorized = email === blog.author || role === "admin";
     if (isAuthorized) {
       await Blog.findByIdAndDelete(blogId); 
+      await Comment.deleteMany({blog: blogId})
 
       return res.status(201).json({message: "Blog Deleted Successfully✅"});
     } else {

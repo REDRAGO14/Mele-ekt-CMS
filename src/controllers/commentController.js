@@ -11,7 +11,7 @@ exports.Add_Comment = async (req, res) => {
    try {
      const newComment = new Comment({
         commenter: commenter,
-        blog: blogId,
+        blog: blogId, //forginkey
         comment: comment,
     })
 

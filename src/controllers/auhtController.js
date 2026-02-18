@@ -1,6 +1,6 @@
 const express = require("express");
 const mongoose = require("mongoose");
-const userSchema = require("../Schema/UserSchema");
+const User = require("../Schema/UserSchema");
 const bcrypt = require("bcrypt");
 const jwt = require('jsonwebtoken')
 const app = express();
@@ -10,7 +10,7 @@ const Jwt_Sectet = process.env.Jwt_Sectet
 
 app.use(express.json());
 
-const User = mongoose.model("user", userSchema);
+
 
 exports.signUp = async (req, res) => {
   try {
@@ -21,7 +21,7 @@ exports.signUp = async (req, res) => {
       email: req.body.email,
       password: hashedPassword,
       trusted_ips: req.ip,
-    });
+    });   
     
     await user.save();
     res.status(201).json({message: "User regestered successfull✅"});
