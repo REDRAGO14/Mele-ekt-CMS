@@ -24,6 +24,10 @@ export const blogService = {
     const response = await api.get('/home');
     return response.data;
   },
+  createBlog: async ({ title, content }) => {
+    const response = await api.post('/blogs', { title, content });
+    return response.data;
+  },
 };
 
 export const adminService = {

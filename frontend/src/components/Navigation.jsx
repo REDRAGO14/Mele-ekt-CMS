@@ -39,12 +39,24 @@ const Navigation = () => {
             </Link>
 
             {token ? (
-              <button
-                onClick={onLogout}
-                className="text-sm font-medium text-gray-600 hover:text-gray-900"
-              >
-                Logout
-              </button>
+              <>
+                <Link
+                  to="/write"
+                  className={`text-sm font-medium transition-colors ${
+                    location.pathname === '/write'
+                      ? 'text-gray-900 border-b-2 border-gray-900 pb-1'
+                      : 'text-gray-600 hover:text-gray-900'
+                  }`}
+                >
+                  Write
+                </Link>
+                <button
+                  onClick={onLogout}
+                  className="text-sm font-medium text-gray-600 hover:text-gray-900"
+                >
+                  Logout
+                </button>
+              </>
             ) : (
               <Link
                 to="/login"

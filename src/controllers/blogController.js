@@ -9,11 +9,16 @@ app.use(express.json());
 
 exports.All_Blogs = async (req, res) => {
   try {
-    const blogs = await Blog.find().populate("author", "email -_id").populate("blogComments", "comment -_id -blog").sort({Engagement: -1}).lean();
-    //here i use ai to get only the author email string not the email object
-    const flattenedBlogs = blogs.map(blog => ({
+    const blogs = await Blog.find()
+      .populate("author", "email -_id")
+      .populate("blogComments", "comment -_id -blog")
+      .sort({ Engagement: -1 })
+      .lean();
+    // Normalize author and isFlagged for frontend consumption
+    const flattenedBlogs = blogs.map((blog) => ({
       ...blog,
-      author: blog.author ? blog.author.email : "Unknown" 
+      author: blog.author ? blog.author.email : "Unknown",
+      isFlagged: blog.isFlagged === true || blog.isFlagged === "true",
     }));
 
     res.json(flattenedBlogs);

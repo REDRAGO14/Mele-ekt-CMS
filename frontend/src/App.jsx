@@ -5,6 +5,7 @@ import AdminDashboard from './components/AdminDashboard';
 import ProtectedRoute from './components/ProtectedRoute';
 import Login from './pages/Login';
 import Register from './pages/Register';
+import CreateBlog from './pages/CreateBlog';
 
 function App() {
   return (
@@ -20,6 +21,14 @@ function App() {
             element={
               <ProtectedRoute>
                 <AdminDashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/write"
+            element={
+              <ProtectedRoute>
+                <CreateBlog />
               </ProtectedRoute>
             }
           />
