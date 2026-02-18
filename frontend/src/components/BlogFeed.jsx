@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { Heart, MessageCircle } from 'lucide-react';
 import { blogService } from '../services/api';
 
@@ -77,9 +78,11 @@ const BlogFeed = () => {
                 </p>
               </div>
 
-              <h2 className="font-serif text-3xl font-bold text-gray-900 mb-4 leading-tight">
-                {blog.title}
-              </h2>
+              <Link to={`/blog/${blog._id}`}>
+                <h2 className="font-serif text-3xl font-bold text-gray-900 mb-4 leading-tight hover:underline">
+                  {blog.title}
+                </h2>
+              </Link>
 
               <div className="prose prose-lg max-w-none mb-6">
                 <p className="text-gray-700 leading-relaxed whitespace-pre-wrap">

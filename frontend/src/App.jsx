@@ -6,6 +6,7 @@ import ProtectedRoute from './components/ProtectedRoute';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import CreateBlog from './pages/CreateBlog';
+import BlogDetail from './pages/BlogDetail';
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
         <Navigation />
         <Routes>
           <Route path="/" element={<BlogFeed />} />
+          <Route path="/blog/:id" element={<BlogDetail />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route

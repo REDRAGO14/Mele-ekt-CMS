@@ -6,6 +6,7 @@ const AdminDashboard = () => {
   const [flaggedBlogs, setFlaggedBlogs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+   const [view, setView] = useState('users'); // 'users' | 'flagged'
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -78,6 +79,30 @@ const AdminDashboard = () => {
         </div>
       </div>
 
+      <div className="mb-4 flex gap-3">
+        <button
+          onClick={() => setView('users')}
+          className={`px-3 py-1 text-sm rounded-full border ${
+            view === 'users'
+              ? 'bg-gray-900 text-white border-gray-900'
+              : 'bg-white text-gray-700 border-gray-300'
+          }`}
+        >
+          Users
+        </button>
+        <button
+          onClick={() => setView('flagged')}
+          className={`px-3 py-1 text-sm rounded-full border ${
+            view === 'flagged'
+              ? 'bg-gray-900 text-white border-gray-900'
+              : 'bg-white text-gray-700 border-gray-300'
+          }`}
+        >
+          Flagged content
+        </button>
+      </div>
+
+      {view === 'users' ? (
       <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
         <table className="min-w-full divide-y divide-gray-200">
           <thead className="bg-gray-50">
@@ -138,6 +163,63 @@ const AdminDashboard = () => {
           </tbody>
         </table>
       </div>
+      ) : (
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+          <table className="min-w-full divide-y divide-gray-200">
+            <thead className="bg-gray-50">
+              <tr>
+                <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                  Title
+                </th>
+                <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                  Author
+                </th>
+                <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                  Engagement
+                </th>
+                <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                  Flagged At
+                </th>
+              </tr>
+            </thead>
+            <tbody className="bg-white divide-y divide-gray-200">
+              {flaggedBlogs.length === 0 ? (
+                <tr>
+                  <td
+                    colSpan="4"
+                    className="px-6 py-8 text-center text-gray-500"
+                  >
+                    No flagged blogs.
+                  </td>
+                </tr>
+              ) : (
+                flaggedBlogs.map((blog) => (
+                  <tr key={blog._id} className="hover:bg-gray-50">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                      {blog.title}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                      {blog.author?.email || 'Unknown'}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                      {blog.Engagement || 0}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      {blog.Date
+                        ? new Date(blog.Date).toLocaleDateString('en-US', {
+                            year: 'numeric',
+                            month: 'short',
+                            day: 'numeric',
+                          })
+                        : 'N/A'}
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
+      )}
     </div>
   );
 };

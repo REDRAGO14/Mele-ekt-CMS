@@ -28,6 +28,40 @@ exports.All_Blogs = async (req, res) => {
   }
 };
 
+exports.Blog_Detail = async (req, res) => {
+  try {
+    const blogId = req.params.id;
+    const blog = await Blog.findById(blogId)
+      .populate("author", "email -_id")
+      .populate({
+        path: "blogComments",
+        select: "comment commenter createdAt -_id -blog",
+        populate: { path: "commenter", select: "email -_id" },
+      })
+      .lean();
+
+    if (!blog) {
+      return res.status(404).json({ message: "blog not found." });
+    }
+
+    const normalized = {
+      ...blog,
+      author: blog.author ? blog.author.email : "Unknown",
+      isFlagged: blog.isFlagged === true || blog.isFlagged === "true",
+      comments: (blog.blogComments || []).map((c) => ({
+        comment: c.comment,
+        createdAt: c.createdAt,
+        commenterEmail: c.commenter ? c.commenter.email : "Unknown",
+      })),
+    };
+
+    return res.json(normalized);
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({ error: "internal server error" });
+  }
+};
+
 exports.Create_Blog = async (req, res) => {
   try {
     const authorId = req.user.id;

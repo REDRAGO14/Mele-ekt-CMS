@@ -16,7 +16,7 @@ const app = express();
 
 app.use(
   cors({
-    origin: ["http://localhost:5173", "http://127.0.0.1:5173"],
+    origin: ["http://localhost:5173", "http://127.0.0.1:5173","http://localhost:5174"],
     credentials: true,
   }),
 );
@@ -30,10 +30,11 @@ app.post("/api/sign_up", auhtController.signUp);
 
 app.post("/api/login", auhtController.login);
 
-app.get("/api/blogs",verifyToken, blogController.All_Blogs)
-app.post("/api/blogs",verifyToken, contentGuard, blogController.Create_Blog);
-app.put("/api/blogs/:id", verifyToken,contentGuard, blogController.Update_Blog )
-app.delete("/api/blogs/:id",verifyToken, blogController.Delete_Blog)
+app.get("/api/blogs", verifyToken, blogController.All_Blogs)
+app.get("/api/blogs/:id", blogController.Blog_Detail)
+app.post("/api/blogs", verifyToken, contentGuard, blogController.Create_Blog);
+app.put("/api/blogs/:id", verifyToken, contentGuard, blogController.Update_Blog)
+app.delete("/api/blogs/:id", verifyToken, blogController.Delete_Blog)
 
 
 app.post('/api/blog/comment/:id',verifyToken, commentController.Add_Comment)
