@@ -1,0 +1,41 @@
+import { Link, useLocation } from 'react-router-dom';
+
+const Navigation = () => {
+  const location = useLocation();
+
+  return (
+    <nav className="border-b border-gray-200 bg-white">
+      <div className="max-w-6xl mx-auto px-4 py-4">
+        <div className="flex items-center justify-between">
+          <Link to="/" className="font-serif text-xl font-bold text-gray-900">
+            Mele-ekt CMS
+          </Link>
+          <div className="flex gap-6">
+            <Link
+              to="/"
+              className={`text-sm font-medium transition-colors ${
+                location.pathname === '/'
+                  ? 'text-gray-900 border-b-2 border-gray-900 pb-1'
+                  : 'text-gray-600 hover:text-gray-900'
+              }`}
+            >
+              Feed
+            </Link>
+            <Link
+              to="/dashboard"
+              className={`text-sm font-medium transition-colors ${
+                location.pathname === '/dashboard'
+                  ? 'text-gray-900 border-b-2 border-gray-900 pb-1'
+                  : 'text-gray-600 hover:text-gray-900'
+              }`}
+            >
+              Dashboard
+            </Link>
+          </div>
+        </div>
+      </div>
+    </nav>
+  );
+};
+
+export default Navigation;
