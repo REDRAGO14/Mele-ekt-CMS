@@ -19,6 +19,7 @@ exports.All_Blogs = async (req, res) => {
     res.json(flattenedBlogs);
   } catch (err) {
     console.log(err);
+    return res.status(500).json({ error: "internal server error" });
   }
 };
 
@@ -43,7 +44,6 @@ exports.Create_Blog = async (req, res) => {
 exports.Delete_Blog = async (req, res) => {
   try {
     const blogId = req.params.id;
-    const email = req.user.email;
     const role = req.user.role;
     const blog = await Blog.findOne({ _id: blogId });
     if (!blog) {
@@ -51,7 +51,9 @@ exports.Delete_Blog = async (req, res) => {
         message: "blog not found.",
       });
     }
-    const isAuthorized = email === blog.author || role === "admin";
+    const userId = req.user.id;
+    const isOwner = String(blog.author) === String(userId);
+    const isAuthorized = isOwner || role === "admin";
     if (isAuthorized) {
       await Blog.findByIdAndDelete(blogId); 
       await Comment.deleteMany({blog: blogId})
@@ -75,14 +77,14 @@ exports.Update_Blog = async (req, res) => {
     const isflagged = req.isFlagged;
     const updated_blog = req.body;
     console.log(updated_blog)
-    const email = req.user.email;
     const blog = await Blog.findOne({ _id: blogId });
     if (!blog) {
       return res.status(404).json({
         message: "blog not found.",
       });
     }
-    const isAuthorized = email === blog.author;
+    const userId = req.user.id;
+    const isAuthorized = String(blog.author) === String(userId);
     if (isAuthorized) {
       await Blog.findByIdAndUpdate(
         { _id: blogId },
@@ -96,5 +98,6 @@ exports.Update_Blog = async (req, res) => {
     }
   } catch (error) {
     console.log(error);
+    return res.status(500).json({ error: "internal server error" });
   }
 };

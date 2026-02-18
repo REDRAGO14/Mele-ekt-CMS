@@ -6,7 +6,6 @@ const isAdmin = (req, res, next) =>{
     return res.status(403).json({
         message: "this page is forbidden"
     })
-    next()
  }
 }
 

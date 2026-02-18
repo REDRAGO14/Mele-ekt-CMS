@@ -1,5 +1,7 @@
 const express = require("express");
-require("dotenv").config({ path: "../.env" });
+const path = require("path");
+require("dotenv").config({ path: path.resolve(__dirname, "..", ".env") });
+const cors = require("cors");
 const auhtController = require("./controllers/auhtController");
 const blogController = require("./controllers/blogController");
 const commentController = require("./controllers/commentController");
@@ -12,6 +14,12 @@ const PORT = process.env.PORT || 3000;
 
 const app = express();
 
+app.use(
+  cors({
+    origin: ["http://localhost:5173", "http://127.0.0.1:5173"],
+    credentials: true,
+  }),
+);
 app.use(express.json());
 
 dbConnection();
@@ -31,6 +39,7 @@ app.delete("/api/blogs/:id",verifyToken, blogController.Delete_Blog)
 app.post('/api/blog/comment/:id',verifyToken, commentController.Add_Comment)
 
 app.get('/api/admin_dashboard',verifyToken, isAdmin, admin_dashboard.adminDashboardAllUsers)
+app.get('/api/admin_flagged_blogs',verifyToken, isAdmin, admin_dashboard.BlogsWithExtremeContents)
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
 });

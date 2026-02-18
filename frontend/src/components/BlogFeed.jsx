@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Heart, MessageCircle } from 'lucide-react';
+import { blogService } from '../services/api';
 
 const BlogFeed = () => {
   const [blogs, setBlogs] = useState([]);
@@ -9,11 +10,7 @@ const BlogFeed = () => {
   useEffect(() => {
     const fetchBlogs = async () => {
       try {
-        const response = await fetch('http://localhost:3000/api/home');
-        if (!response.ok) {
-          throw new Error('Failed to fetch blogs');
-        }
-        const data = await response.json();
+        const data = await blogService.getAllBlogs();
         setBlogs(data);
         setLoading(false);
       } catch (err) {

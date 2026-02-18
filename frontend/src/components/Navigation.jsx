@@ -2,6 +2,12 @@ import { Link, useLocation } from 'react-router-dom';
 
 const Navigation = () => {
   const location = useLocation();
+  const token = localStorage.getItem('token');
+
+  const onLogout = () => {
+    localStorage.removeItem('token');
+    window.location.href = '/';
+  };
 
   return (
     <nav className="border-b border-gray-200 bg-white">
@@ -10,7 +16,7 @@ const Navigation = () => {
           <Link to="/" className="font-serif text-xl font-bold text-gray-900">
             Mele-ekt CMS
           </Link>
-          <div className="flex gap-6">
+          <div className="flex items-center gap-6">
             <Link
               to="/"
               className={`text-sm font-medium transition-colors ${
@@ -31,6 +37,26 @@ const Navigation = () => {
             >
               Dashboard
             </Link>
+
+            {token ? (
+              <button
+                onClick={onLogout}
+                className="text-sm font-medium text-gray-600 hover:text-gray-900"
+              >
+                Logout
+              </button>
+            ) : (
+              <Link
+                to="/login"
+                className={`text-sm font-medium transition-colors ${
+                  location.pathname === '/login'
+                    ? 'text-gray-900 border-b-2 border-gray-900 pb-1'
+                    : 'text-gray-600 hover:text-gray-900'
+                }`}
+              >
+                Login
+              </Link>
+            )}
           </div>
         </div>
       </div>

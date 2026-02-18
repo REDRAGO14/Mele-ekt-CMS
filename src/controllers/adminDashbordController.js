@@ -6,7 +6,10 @@ app.use(express.json());
 
 exports.BlogsWithExtremeContents = async (req, res) => {
   try {
-    const all_blog = await Blog.find({isFlagged: {$in: [true]}}).populate("author", "email -_id").lean();//find a blog where the isFlagged field is true 
+    // Support legacy data where isFlagged may have been stored as a string.
+    const all_blog = await Blog.find({ isFlagged: { $in: [true, "true"] } })
+      .populate("author", "email -_id")
+      .lean(); // find blogs where isFlagged is true
     res.json(all_blog);
   } catch (error) {
     console.log(error);

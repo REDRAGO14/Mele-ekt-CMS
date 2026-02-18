@@ -17,10 +17,10 @@ exports.signUp = async (req, res) => {
     const hashedPassword = await bcrypt.hash(req.body.password, 10);
 
     const user = new User({
-      user_id: req.body._id,
+      user_id: req.body.user_id,
       email: req.body.email,
       password: hashedPassword,
-      trusted_ips: req.ip,
+      trusted_ips: [req.ip],
     });   
     
     await user.save();

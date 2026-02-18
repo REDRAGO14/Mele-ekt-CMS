@@ -1,5 +1,4 @@
 const { Schema, model } = require("mongoose");
-const { virtual, virtuals } = require("./UserSchema");
 
 const BlogSchema = Schema(
   {
@@ -10,7 +9,7 @@ const BlogSchema = Schema(
       ref: "user",
       required: true,
     },
-    isFlagged: { type: String, required: true, default: false },
+    isFlagged: { type: Boolean, default: false },
     Date: { type: Date, default: Date.now },
     Engagement: {type: Number , default: 0 }
   },

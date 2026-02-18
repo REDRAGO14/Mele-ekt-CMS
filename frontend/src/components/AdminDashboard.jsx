@@ -1,39 +1,29 @@
 import { useState, useEffect } from 'react';
+import { adminService } from '../services/api';
 
 const AdminDashboard = () => {
   const [users, setUsers] = useState([]);
+  const [flaggedBlogs, setFlaggedBlogs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const token = localStorage.getItem('token');
-        if (!token) {
-          setError('Authentication required. Please log in.');
-          setLoading(false);
-          return;
-        }
-
-        const response = await fetch('http://localhost:3000/api/admin_dashboard', {
-          headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json',
-          },
-        });
-
-        if (!response.ok) {
-          if (response.status === 401) {
-            throw new Error('Unauthorized. Admin access required.');
-          }
-          throw new Error('Failed to fetch users');
-        }
-
-        const data = await response.json();
-        setUsers(data);
+        const [usersData, flaggedData] = await Promise.all([
+          adminService.getAllUsers(),
+          adminService.getFlaggedBlogs(),
+        ]);
+        setUsers(usersData);
+        setFlaggedBlogs(flaggedData);
         setLoading(false);
       } catch (err) {
-        setError(err.message);
+        // axios errors are a bit different; normalize message
+        const message =
+          err?.response?.status === 401
+            ? 'Unauthorized. Admin access required.'
+            : err?.response?.data?.message || err.message;
+        setError(message);
         setLoading(false);
       }
     };
@@ -69,6 +59,25 @@ const AdminDashboard = () => {
         <p className="text-gray-600">User statistics and blog counts</p>
       </div>
 
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
+        <div className="bg-white rounded-lg border border-gray-200 p-4">
+          <div className="text-xs font-semibold text-gray-600 uppercase tracking-wider">
+            Total users
+          </div>
+          <div className="mt-2 text-2xl font-semibold text-gray-900">
+            {users.length}
+          </div>
+        </div>
+        <div className="bg-white rounded-lg border border-gray-200 p-4">
+          <div className="text-xs font-semibold text-gray-600 uppercase tracking-wider">
+            Flagged blogs
+          </div>
+          <div className="mt-2 text-2xl font-semibold text-gray-900">
+            {flaggedBlogs.length}
+          </div>
+        </div>
+      </div>
+
       <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
         <table className="min-w-full divide-y divide-gray-200">
           <thead className="bg-gray-50">
@@ -95,7 +104,9 @@ const AdminDashboard = () => {
                 </td>
               </tr>
             ) : (
-              users.map((user) => (
+              [...users]
+                .sort((a, b) => (b.blogCount ?? 0) - (a.blogCount ?? 0))
+                .map((user) => (
                 <tr key={user._id} className="hover:bg-gray-50">
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                     {user.email}
