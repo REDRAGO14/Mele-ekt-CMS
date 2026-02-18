@@ -9,9 +9,24 @@ const verifyToken = require('./middleware/bouncer')
 const isAdmin = require('./middleware/authorization')
 const contentGuard = require('./middleware/ContentGuard')
 const PORT = process.env.PORT || 3000;
-
+const cors = require('cors');
 const app = express();
+app.use((req, res, next) => {
+    res.header('Access-Control-Allow-Origin', 'http://localhost:5173');
+    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+    res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+    
+    // If it's a preflight check, respond immediately with 200
+    if (req.method === 'OPTIONS') {
+        return res.sendStatus(200);
+    }
+    next();
+});
 
+app.use(cors({
+    origin: 'http://localhost:5173',
+    credentials: true
+}));
 app.use(express.json());
 
 dbConnection();
