@@ -33,6 +33,12 @@ const BlogFeed = () => {
     });
   };
 
+  const excerpt = (text, max = 220) => {
+    const t = (text || '').trim();
+    if (t.length <= max) return t;
+    return `${t.slice(0, max).trim()}…`;
+  };
+
   if (loading) {
     return (
       <div className="flex justify-center items-center min-h-screen">
@@ -50,15 +56,17 @@ const BlogFeed = () => {
   }
 
   return (
-    <div className="max-w-3xl mx-auto px-4 py-12">
-      <div className="mb-12">
-        <h1 className="font-serif text-4xl font-bold text-gray-900 mb-2">
-          Mele-ekt CMS
+    <div className="max-w-[720px] mx-auto px-4 py-10">
+      <div className="mb-8">
+        <h1 className="font-serif text-[42px] leading-tight font-bold text-neutral-950">
+          Home
         </h1>
-        <p className="text-gray-600">A community-driven blogging platform</p>
+        <p className="text-neutral-600 mt-2">
+          Stories ranked by engagement.
+        </p>
       </div>
 
-      <div className="space-y-12">
+      <div className="divide-y divide-neutral-200">
         {blogs.length === 0 ? (
           <div className="text-center text-gray-500 py-12">
             No blogs available yet.
@@ -67,30 +75,28 @@ const BlogFeed = () => {
           blogs.map((blog) => (
             <article
               key={blog._id}
-              className="border-b border-gray-200 pb-12 last:border-b-0"
+              className="py-8"
             >
-              <div className="mb-4">
-                <p className="text-sm text-gray-600 mb-2">
+              <div className="mb-3">
+                <p className="text-sm text-neutral-700">
                   {blog.author || 'Unknown Author'}
                 </p>
-                <p className="text-xs text-gray-500">
+                <p className="text-xs text-neutral-500 mt-1">
                   {formatDate(blog.Date)}
                 </p>
               </div>
 
               <Link to={`/blog/${blog._id}`}>
-                <h2 className="font-serif text-3xl font-bold text-gray-900 mb-4 leading-tight hover:underline">
+                <h2 className="font-serif text-3xl font-bold text-neutral-950 leading-tight hover:underline">
                   {blog.title}
                 </h2>
               </Link>
 
-              <div className="prose prose-lg max-w-none mb-6">
-                <p className="text-gray-700 leading-relaxed whitespace-pre-wrap">
-                  {blog.content}
-                </p>
-              </div>
+              <p className="text-neutral-700 mt-3 leading-relaxed">
+                {excerpt(blog.content)}
+              </p>
 
-              <div className="flex items-center gap-6 text-sm text-gray-600">
+              <div className="flex items-center gap-6 text-sm text-neutral-600 mt-4">
                 <div className="flex items-center gap-2">
                   <Heart className="w-4 h-4" />
                   <span>{blog.Engagement || 0}</span>
@@ -101,10 +107,16 @@ const BlogFeed = () => {
                     <span>{blog.blogComments.length}</span>
                   </div>
                 )}
+                <Link
+                  to={`/blog/${blog._id}`}
+                  className="ml-auto text-sm font-medium text-neutral-900 hover:underline"
+                >
+                  Read →
+                </Link>
               </div>
 
               {blog.isFlagged && (
-                <div className="mt-4 px-3 py-2 bg-yellow-50 border border-yellow-200 rounded text-sm text-yellow-800">
+                <div className="mt-4 px-3 py-2 bg-amber-50 border border-amber-200 rounded-lg text-sm text-amber-900">
                   ⚠️ This content has been flagged for review
                 </div>
               )}

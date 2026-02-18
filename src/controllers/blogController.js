@@ -32,7 +32,7 @@ exports.Blog_Detail = async (req, res) => {
   try {
     const blogId = req.params.id;
     const blog = await Blog.findById(blogId)
-      .populate("author", "email -_id")
+      .populate("author", "email")
       .populate({
         path: "blogComments",
         select: "comment commenter createdAt -_id -blog",
@@ -47,6 +47,7 @@ exports.Blog_Detail = async (req, res) => {
     const normalized = {
       ...blog,
       author: blog.author ? blog.author.email : "Unknown",
+      authorId: blog.author ? blog.author._id : null,
       isFlagged: blog.isFlagged === true || blog.isFlagged === "true",
       comments: (blog.blogComments || []).map((c) => ({
         comment: c.comment,

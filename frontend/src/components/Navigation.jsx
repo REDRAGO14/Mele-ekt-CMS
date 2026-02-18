@@ -10,19 +10,19 @@ const Navigation = () => {
   };
 
   return (
-    <nav className="border-b border-gray-200 bg-white">
-      <div className="max-w-6xl mx-auto px-4 py-4">
+    <nav className="border-b border-neutral-200 bg-white/80 backdrop-blur">
+      <div className="max-w-[1100px] mx-auto px-4 py-3">
         <div className="flex items-center justify-between">
-          <Link to="/" className="font-serif text-xl font-bold text-gray-900">
+          <Link to="/" className="font-serif text-xl font-bold text-neutral-950">
             Mele-ekt CMS
           </Link>
-          <div className="flex items-center gap-6">
+          <div className="flex items-center gap-5">
             <Link
               to="/"
               className={`text-sm font-medium transition-colors ${
                 location.pathname === '/'
-                  ? 'text-gray-900 border-b-2 border-gray-900 pb-1'
-                  : 'text-gray-600 hover:text-gray-900'
+                  ? 'text-neutral-950'
+                  : 'text-neutral-600 hover:text-neutral-950'
               }`}
             >
               Feed
@@ -31,8 +31,8 @@ const Navigation = () => {
               to="/dashboard"
               className={`text-sm font-medium transition-colors ${
                 location.pathname === '/dashboard'
-                  ? 'text-gray-900 border-b-2 border-gray-900 pb-1'
-                  : 'text-gray-600 hover:text-gray-900'
+                  ? 'text-neutral-950'
+                  : 'text-neutral-600 hover:text-neutral-950'
               }`}
             >
               Dashboard
@@ -42,17 +42,13 @@ const Navigation = () => {
               <>
                 <Link
                   to="/write"
-                  className={`text-sm font-medium transition-colors ${
-                    location.pathname === '/write'
-                      ? 'text-gray-900 border-b-2 border-gray-900 pb-1'
-                      : 'text-gray-600 hover:text-gray-900'
-                  }`}
+                  className="rounded-full bg-neutral-900 text-white px-4 py-2 text-sm font-semibold hover:bg-neutral-800"
                 >
                   Write
                 </Link>
                 <button
                   onClick={onLogout}
-                  className="text-sm font-medium text-gray-600 hover:text-gray-900"
+                  className="text-sm font-medium text-neutral-600 hover:text-neutral-950"
                 >
                   Logout
                 </button>
@@ -62,8 +58,8 @@ const Navigation = () => {
                 to="/login"
                 className={`text-sm font-medium transition-colors ${
                   location.pathname === '/login'
-                    ? 'text-gray-900 border-b-2 border-gray-900 pb-1'
-                    : 'text-gray-600 hover:text-gray-900'
+                    ? 'text-neutral-950'
+                    : 'text-neutral-600 hover:text-neutral-950'
                 }`}
               >
                 Login

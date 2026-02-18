@@ -28,6 +28,18 @@ export const blogService = {
     const response = await api.get(`/blogs/${id}`);
     return response.data;
   },
+  addComment: async (blogId, comment) => {
+    const response = await api.post(`/blog/comment/${blogId}`, { comment });
+    return response.data;
+  },
+  updateBlog: async (id, payload) => {
+    const response = await api.put(`/blogs/${id}`, payload);
+    return response.data;
+  },
+  deleteBlog: async (id) => {
+    const response = await api.delete(`/blogs/${id}`);
+    return response.data;
+  },
   createBlog: async ({ title, content }) => {
     const response = await api.post('/blogs', { title, content });
     return response.data;
