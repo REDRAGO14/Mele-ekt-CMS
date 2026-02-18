@@ -41,6 +41,7 @@ app.post('/api/blog/comment/:id',verifyToken, commentController.Add_Comment)
 
 app.get('/api/admin_dashboard',verifyToken, isAdmin, admin_dashboard.adminDashboardAllUsers)
 app.get('/api/admin_flagged_blogs',verifyToken, isAdmin, admin_dashboard.BlogsWithExtremeContents)
+app.patch('/api/admin/users/:id/role',verifyToken, isAdmin, admin_dashboard.updateUserRole)
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
 });

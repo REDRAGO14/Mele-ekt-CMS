@@ -21,3 +21,32 @@ exports.adminDashboardAllUsers = async (req, res) =>{
 const allUsers = await User.find().populate({path: "allBlogByUser", select: "title isFlagged  -_id -author", options: {virtuals: false}}).lean()
     res.send(allUsers)
 }
+
+exports.updateUserRole = async (req, res) => {
+  try {
+    const userId = req.params.id;
+    const { role } = req.body;
+
+    if (!["user", "admin"].includes(role)) {
+      return res.status(400).json({ message: "invalid role" });
+    }
+
+    const updated = await User.findByIdAndUpdate(
+      userId,
+      { role },
+      { new: true },
+    ).lean();
+
+    if (!updated) {
+      return res.status(404).json({ message: "user not found" });
+    }
+
+    return res.json({
+      message: "role updated successfully",
+      user: updated,
+    });
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({ error: "internal server error" });
+  }
+}

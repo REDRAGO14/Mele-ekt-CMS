@@ -43,6 +43,14 @@ export const adminService = {
     const response = await api.get('/admin_flagged_blogs');
     return response.data;
   },
+  deleteBlog: async (id) => {
+    const response = await api.delete(`/blogs/${id}`);
+    return response.data;
+  },
+  updateUserRole: async (id, role) => {
+    const response = await api.patch(`/admin/users/${id}/role`, { role });
+    return response.data;
+  },
 };
 
 export const authService = {

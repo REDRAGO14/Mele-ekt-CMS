@@ -136,14 +136,28 @@ const AdminDashboard = () => {
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                     {user.email}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <span className={`px-2 py-1 text-xs font-semibold rounded-full ${
-                      user.role === 'admin' 
-                        ? 'bg-purple-100 text-purple-800' 
-                        : 'bg-gray-100 text-gray-800'
-                    }`}>
-                      {user.role}
-                    </span>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm">
+                    <select
+                      value={user.role}
+                      onChange={async (e) => {
+                        const newRole = e.target.value;
+                        try {
+                          await adminService.updateUserRole(user._id, newRole);
+                          setUsers((prev) =>
+                            prev.map((u) =>
+                              u._id === user._id ? { ...u, role: newRole } : u,
+                            ),
+                          );
+                        } catch (err) {
+                          console.error(err);
+                          // keep old value on error
+                        }
+                      }}
+                      className="border border-gray-300 rounded-md px-2 py-1 text-sm bg-white"
+                    >
+                      <option value="user">user</option>
+                      <option value="admin">admin</option>
+                    </select>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                     {user.blogCount || 0}
@@ -212,6 +226,23 @@ const AdminDashboard = () => {
                             day: 'numeric',
                           })
                         : 'N/A'}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-right text-sm">
+                      <button
+                        onClick={async () => {
+                          try {
+                            await adminService.deleteBlog(blog._id);
+                            setFlaggedBlogs((prev) =>
+                              prev.filter((b) => b._id !== blog._id),
+                            );
+                          } catch (err) {
+                            console.error(err);
+                          }
+                        }}
+                        className="text-red-600 hover:text-red-800 text-xs font-semibold"
+                      >
+                        Delete
+                      </button>
                     </td>
                   </tr>
                 ))
